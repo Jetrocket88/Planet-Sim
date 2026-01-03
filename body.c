@@ -18,7 +18,7 @@ Body initialiseBody(CelestialType type, SDL_Color color, float mass, Vec2d pos,
     body.trail = *initTrail();
 
     body.updateCount = 0;
-    body.trailPollRate = 2;
+    body.trailPollRate = 1;
 
     return body;
 }
