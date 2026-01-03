@@ -44,7 +44,7 @@ int main() {
     //fps stuff
     int lastFps = -1;
 
-    size_t nBodies = 2;
+    size_t nBodies = 4;
     Body *bodies = malloc(nBodies * sizeof(Body));
     bodies[0] = initialiseBody(
         STAR,
@@ -59,10 +59,28 @@ int main() {
         PLANET,
         GREEN,
         5.972e24f,
-        (Vec2d){0.05f, 0.0f}, //Au position
-        (Vec2d){-0.000f, 0.000e-1}, //Au velocity
+        (Vec2d){1.00f, 0.0f}, //Au position
+        (Vec2d){0.0f, 1.999e-7}, //Au velocity
         (Vec2d){0.0f, 0.0f}, //Au acceleration
         km_to_au(6371)
+    );
+    bodies[2] = initialiseBody(
+        PLANET,
+        RED,
+        1.989e27f,
+        (Vec2d){0.0f, 0.5f}, //Au position
+        (Vec2d){1.0e-7f, 0.0f}, //Au velocity
+        (Vec2d){0.0f, 0.0f}, //Au acceleration
+        km_to_au(8000)
+    );
+    bodies[3] = initialiseBody(
+        PLANET,
+        BLUE,
+        1.989e26f,
+        (Vec2d){0.7f, 0.7f}, //Au position
+        (Vec2d){1.0e-7f, 1.10e-8f}, //Au velocity
+        (Vec2d){0.0f, 0.0f}, //Au acceleration
+        km_to_au(16000)
     );
 
     Camera cam = initialiseCamera(
@@ -70,8 +88,24 @@ int main() {
         500.0f,
         WIDTH,
         HEIGHT,
-        1000.0f
+        0500.0f
     );
+    //time scale stuff
+    float timeScale;
+    float timeScales[] = {
+        60.0f, // 1 minute per second
+        600.0f, // 10 minutes per second
+        3600.0f, // 1 hour per second
+        86400.0f, // 1 day per second
+        604800.0f, // 1 week per second
+        2.628e6f, // 1 month per second
+        3.154e7f // 1 year per second
+    };
+
+    const size_t tSLen = sizeof(timeScales) / sizeof(timeScales[0]);
+    size_t currentTSIndex = 3; //start at 1 day per second
+    timeScale = timeScales[currentTSIndex];
+
 
     bool running = true;
     SDL_Event event;
@@ -81,6 +115,7 @@ int main() {
         Uint64 start = SDL_GetPerformanceCounter();
         Uint32 current = SDL_GetTicks();
         float dt = (current - lastUpdate) / 1000.0f;
+        float simDt = dt * timeScale;
 
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -103,16 +138,18 @@ int main() {
             SDL_SetRenderDrawColor(prenderer, b->color.r, b->color.g, b->color.b, 255);
 
             Vec2d screenPos = worldToScreen(b->pos, &cam);
-            double visibleRadius = clamp(b->radius * cam.zoom, 2.0, 1e6);
+            double visibleRadius = clamp(b->radius * cam.zoom, 4.0, 1e6);
 
             drawFilledCircle(prenderer, screenPos.x, screenPos.y, visibleRadius);
             drawTrail(prenderer, &cam, &bodies[0]);
             drawTrail(prenderer, &cam, &bodies[1]);
+            drawTrail(prenderer, &cam, &bodies[2]);
+            drawTrail(prenderer, &cam, &bodies[3]);
         }
-        SDL_Delay(4);
-        updateAllBodies(bodies, nBodies, dt);
+        updateAllBodies(bodies, nBodies, simDt);
         moveCamera(&cam, dt);
-        zoomCamera(&cam, dt);
+        zoomCamera(&cam, dt); 
+        updateTimeScale(&timeScale, timeScales, tSLen, &currentTSIndex);
 
         //physicis
         lastUpdate = current;

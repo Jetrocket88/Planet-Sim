@@ -18,7 +18,7 @@ Body initialiseBody(CelestialType type, SDL_Color color, float mass, Vec2d pos,
     body.trail = *initTrail();
 
     body.updateCount = 0;
-    body.trailPollRate = 10;
+    body.trailPollRate = 2;
 
     return body;
 }
@@ -51,7 +51,7 @@ void updateBody(Body *bodies, size_t nBodies, size_t bodyIndex, double dt) {
         // a = G * m / r^3 * r_vector
         // this is the formula for n bodies
         double factor = G_AU * other->mass / (distSq * dist);
-        printf("Factor between body %zu and body %zu: %e\n", bodyIndex, i, factor);
+        //printf("Factor between body %zu and body %zu: %e\n", bodyIndex, i, factor);
 
         // applies the acceleration due to gravity from other body
         // dx and dy are the components of the distance vector
@@ -118,7 +118,7 @@ void drawTrail(SDL_Renderer *prenderer, Camera* cam, Body *body) {
         size_t i1 = (start + i) % MAX_TRAIL_LENGTH;     // current point
         Vec2d startPos = worldToScreen(body->trail.points[i0], cam);
         Vec2d endPos = worldToScreen(body->trail.points[i1], cam);
-        SDL_Color trailColor = {body->color.r, body->color.g, body->color.b, body->color.a / 8};
+        SDL_Color trailColor = {body->color.r, body->color.g, body->color.b, 10};
         drawLine(prenderer, trailColor, startPos, endPos);
     }
 }

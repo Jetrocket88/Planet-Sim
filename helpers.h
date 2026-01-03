@@ -20,6 +20,8 @@
 #define YELLOW (SDL_Color){255, 255, 0, 255}
 #define GREEN (SDL_Color) {0, 255, 0, 255}
 #define WHITE (SDL_Color){255, 255, 255, 255}
+#define RED (SDL_Color){255, 0, 0, 255}
+#define BLUE (SDL_Color){0, 0, 255, 255}
 
 typedef struct {
     double x;
@@ -34,6 +36,7 @@ SDL_Texture* createTextTexture(SDL_Renderer* prenderer, TTF_Font* font, const ch
 void drawCircle(int x, int y, int radius, SDL_Renderer* renderer);
 void drawFilledCircle(SDL_Renderer *renderer, double cx, double cy, double radius);
 void drawLine(SDL_Renderer* renderer, SDL_Color color, Vec2d start, Vec2d end);
+void updateTimeScale(float* timeScale, float* timeScaleArray, size_t len, size_t* currentIndex);
 
 double clamp(double val, double min, double max);
 

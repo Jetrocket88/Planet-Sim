@@ -4,7 +4,7 @@
 #include "helpers.h"
 #include <assert.h>
 
-#define MAX_TRAIL_LENGTH 2000
+#define MAX_TRAIL_LENGTH 1000
 
 typedef struct {
     Vec2d points[MAX_TRAIL_LENGTH];

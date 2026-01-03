@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include <stdint.h>
 
 SDL_Window *create_window(const char *title, int width, int height) {
     SDL_Window *window =
@@ -80,3 +81,23 @@ void drawLine(SDL_Renderer* renderer, SDL_Color colour, Vec2d start, Vec2d end) 
     SDL_RenderLine(renderer, start.x, start.y, end.x, end.y);
 }
 
+void updateTimeScale(float* timeScale, float* timeScaleArray, size_t len, size_t* currentIndex) {
+    const bool *key_states = SDL_GetKeyboardState(NULL);
+    Uint32 now = SDL_GetTicks();
+    static Uint32 lastPress = 0;
+    Uint32 elapsed = now - lastPress;
+
+
+
+    if (key_states[SDL_SCANCODE_UP] && elapsed > 200) {
+        *currentIndex = (*currentIndex + 1) % len;
+        *timeScale = timeScaleArray[*currentIndex];
+        lastPress = SDL_GetTicks();
+    }
+    if (key_states[SDL_SCANCODE_DOWN] && elapsed > 200) {
+        *currentIndex = (*currentIndex - 1) % len;
+        *timeScale = timeScaleArray[*currentIndex];
+        lastPress = SDL_GetTicks();
+    }
+    return;
+}
