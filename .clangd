@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - -IC:/Users/harry/SDL/x86_64-w64-mingw32/include
+    - -IC:/Users/harry/SDL/SDL_Fonts/include
+
